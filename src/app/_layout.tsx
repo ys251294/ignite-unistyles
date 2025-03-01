@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
+import { ViewStyle } from "react-native"
 
 import { useFonts } from "@expo-google-fonts/space-grotesk"
 import { Slot, SplashScreen } from "expo-router"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 
 import { initI18n } from "@/i18n"
@@ -53,10 +55,16 @@ export default function Root() {
   }
 
   return (
-    <ThemeProvider value={{ themeScheme, setThemeContextOverride }}>
-      <KeyboardProvider>
-        <Slot />
-      </KeyboardProvider>
-    </ThemeProvider>
+    <GestureHandlerRootView style={flex1}>
+      <ThemeProvider value={{ themeScheme, setThemeContextOverride }}>
+        <KeyboardProvider>
+          <Slot />
+        </KeyboardProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   )
+}
+
+const flex1: ViewStyle = {
+  flex: 1,
 }
