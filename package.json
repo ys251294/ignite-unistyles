@@ -25,7 +25,8 @@
     "web": "expo start --web",
     "bundle:web": "npx expo export --platform web",
     "serve:web": "npx serve dist",
-    "prebuild:clean": "npx expo prebuild --clean"
+    "prebuild:clean": "npx expo prebuild --clean",
+    "g:r": "echo -n \"Enter file path: \" && read filePath &&  echo -n \"Enter file Name: \" && read fileName && bunx ignite-cli g route $fileName --dir=$filePath && bunx ignite-cli g page $fileName"
   },
   "dependencies": {
     "@expo-google-fonts/space-grotesk": "^0.2.2",
@@ -54,12 +55,15 @@
     "react-i18next": "^15.0.1",
     "react-native": "0.76.7",
     "react-native-drawer-layout": "^4.0.1",
+    "react-native-edge-to-edge": "^1.4.3",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-keyboard-controller": "^1.12.7",
     "react-native-mmkv": "3.1.0",
+    "react-native-nitro-modules": "0.24.1",
     "react-native-reanimated": "~3.16.1",
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.4.0",
+    "react-native-unistyles": "^3.0.0-beta.8",
     "react-native-web": "~0.19.6"
   },
   "devDependencies": {
