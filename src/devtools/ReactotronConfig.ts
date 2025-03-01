@@ -3,17 +3,17 @@
  * free desktop app for inspecting and debugging your React Native app.
  * @see https://github.com/infinitered/reactotron
  */
-import { Platform, NativeModules } from "react-native"
+import { NativeModules, Platform } from "react-native"
 
+import { router } from "expo-router"
 import { ArgType } from "reactotron-core-client"
 import { mst } from "reactotron-mst"
+import { ReactotronReactNative } from "reactotron-react-native"
 import mmkvPlugin from "reactotron-react-native-mmkv"
 
-import { storage, clear } from "@/utils/storage"
-import { router } from "expo-router"
+import { clear, storage } from "@/utils/storage"
 
 import { Reactotron } from "./ReactotronClient"
-import { ReactotronReactNative } from "reactotron-react-native"
 
 const reactotron = Reactotron.configure({
   name: require("../../package.json").name,

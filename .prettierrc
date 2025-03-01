@@ -1,7 +1,26 @@
 {
+  "plugins": ["@serverless-guru/prettier-plugin-import-order"],
   "printWidth": 100,
   "semi": false,
   "singleQuote": false,
   "trailingComma": "all",
-  "quoteProps": "consistent"
+  "quoteProps": "consistent",
+  "importOrder": [
+    "^react(-native)?$",
+    "",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^@/(.*)$",
+    "",
+    "^../(.*)$",
+    "^./(?!.*.styles)(.*)$",
+    "",
+    "^.*.styles.*$"
+  ],
+  "importOrderSeparation": false,
+  "importOrderSortIndividualImports": true,
+  "importOrderMergeDuplicateImports": true,
+  "importOrderTypeImportsToTop": true,
+  "importOrderCaseInsensitive": true,
+  "importOrderParserPlugins": ["typescript", "jsx"]
 }

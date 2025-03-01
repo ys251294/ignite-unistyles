@@ -1,10 +1,12 @@
-import { observer } from "mobx-react-lite"
 import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+
+import { observer } from "mobx-react-lite"
+
 import { Screen, Text } from "@/components"
 import { isRTL } from "@/i18n"
 import { ThemedStyle } from "@/theme"
-import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 import { useAppTheme } from "@/utils/useAppTheme"
+import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
 const welcomeLogo = require("../../assets/images/logo.png")
 const welcomeFace = require("../../assets/images/welcome-face.png")

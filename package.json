@@ -66,6 +66,7 @@
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
+    "@serverless-guru/prettier-plugin-import-order": "^0.4.2",
     "@testing-library/react-native": "^12.5.2",
     "@types/jest": "^29.2.1",
     "@types/react": "~18.3.12",
@@ -93,5 +94,8 @@
   },
   "engines": {
     "node": "^18.18.0 || >=20.0.0"
-  }
+  },
+  "trustedDependencies": [
+    "postinstall-prepare"
+  ]
 }

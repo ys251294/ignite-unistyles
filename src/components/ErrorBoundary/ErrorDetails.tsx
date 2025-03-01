@@ -1,8 +1,10 @@
+import type { ThemedStyle } from "@/theme"
 import { ErrorInfo } from "react"
 import { ScrollView, TextStyle, View, ViewStyle } from "react-native"
-import { Button, Icon, Screen, Text } from "../../components"
-import type { ThemedStyle } from "@/theme"
+
 import { useAppTheme } from "@/utils/useAppTheme"
+
+import { Button, Icon, Screen, Text } from "../../components"
 
 export interface ErrorDetailsProps {
   error: Error

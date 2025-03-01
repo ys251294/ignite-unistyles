@@ -1,3 +1,4 @@
+import type { ThemedStyle } from "@/theme"
 import { ReactElement } from "react"
 import {
   StyleProp,
@@ -7,13 +8,14 @@ import {
   View,
   ViewStyle,
 } from "react-native"
+
 import { isRTL, translate } from "@/i18n"
+import { useAppTheme } from "@/utils/useAppTheme"
+
 import { $styles } from "../theme"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { Icon, IconTypes } from "./Icon"
 import { Text, TextProps } from "./Text"
-import { useAppTheme } from "@/utils/useAppTheme"
-import type { ThemedStyle } from "@/theme"
 
 export interface HeaderProps {
   /**

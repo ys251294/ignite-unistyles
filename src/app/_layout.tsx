@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
+
+import { useFonts } from "@expo-google-fonts/space-grotesk"
 import { Slot, SplashScreen } from "expo-router"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 
-import { useInitialRootStore } from "@/models"
-import { useFonts } from "@expo-google-fonts/space-grotesk"
-import { customFontsToLoad } from "@/theme"
 import { initI18n } from "@/i18n"
+import { useInitialRootStore } from "@/models"
+import { customFontsToLoad } from "@/theme"
 import { loadDateFnsLocale } from "@/utils/formatDate"
 import { useThemeProvider } from "@/utils/useAppTheme"
 

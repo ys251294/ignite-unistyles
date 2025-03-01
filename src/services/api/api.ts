@@ -5,9 +5,12 @@
  * See the [Backend API Integration](https://docs.infinite.red/ignite-cli/boilerplate/app/services/#backend-api-integration)
  * documentation for more details.
  */
-import { ApisauceInstance, create } from "apisauce"
-import Config from "../../config"
+
 import type { ApiConfig } from "./api.types"
+
+import { ApisauceInstance, create } from "apisauce"
+
+import Config from "../../config"
 
 /**
  * Configuring the apisauce instance.
