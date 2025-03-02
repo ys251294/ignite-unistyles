@@ -14,9 +14,7 @@
     },
     "newArchEnabled": true,
     "jsEngine": "hermes",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "android": {
       "icon": "./assets/images/app-icon-android-legacy.png",
       "package": "com.orthonexus",
@@ -46,7 +44,8 @@
           "backgroundColor": "#191015"
         }
       ],
-      "expo-router"
+      "expo-router",
+      "react-native-edge-to-edge"
     ],
     "experiments": {
       "tsconfigPaths": true,
