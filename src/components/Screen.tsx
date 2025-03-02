@@ -1,7 +1,7 @@
 import { ReactNode, useRef, useState } from "react"
 import {
-  KeyboardAvoidingView,
-  KeyboardAvoidingViewProps,
+  // KeyboardAvoidingView,
+  // KeyboardAvoidingViewProps,
   LayoutChangeEvent,
   Platform,
   ScrollView,
@@ -14,7 +14,11 @@ import {
 import { useScrollToTop } from "@react-navigation/native"
 // import { StatusBar, StatusBarProps, StatusBarStyle } from "expo-status-bar"
 import { SystemBars, SystemBarsProps, SystemBarStyle } from "react-native-edge-to-edge"
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
+import {
+  KeyboardAvoidingView,
+  KeyboardAvoidingViewProps,
+  KeyboardAwareScrollView,
+} from "react-native-keyboard-controller"
 
 import { useAppTheme } from "@/utils/useAppTheme"
 
@@ -63,7 +67,10 @@ interface BaseScreenProps {
   /**
    * Pass any additional props directly to the KeyboardAvoidingView component.
    */
-  KeyboardAvoidingViewProps?: KeyboardAvoidingViewProps
+  KeyboardAvoidingViewProps?: Omit<
+    Omit<KeyboardAvoidingViewProps, "behavior">,
+    "contentContainerStyle"
+  >
 }
 
 interface FixedScreenProps extends BaseScreenProps {
