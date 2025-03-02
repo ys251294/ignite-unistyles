@@ -19,13 +19,14 @@
     "build:android:sim": "eas build --profile development --platform android --local",
     "build:android:dev": "eas build --profile development:device --platform android --local",
     "build:android:prod": "eas build --profile production --platform android --local",
-    "start": "expo start --dev-client",
+    "start": "expo start --dev-client --clear",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "bundle:web": "npx expo export --platform web",
     "serve:web": "npx serve dist",
     "prebuild:clean": "npx expo prebuild --clean",
+    "cleaner": "rm -rf node_modules ios android",
     "g:r": "echo -n \"Enter file path: \" && read filePath &&  echo -n \"Enter file Name: \" && read fileName && bunx ignite-cli g route $fileName --dir=$filePath && bunx ignite-cli g page $fileName"
   },
   "dependencies": {
