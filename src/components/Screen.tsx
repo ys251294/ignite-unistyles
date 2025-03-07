@@ -20,10 +20,10 @@ import {
   KeyboardAwareScrollView,
 } from "react-native-keyboard-controller"
 
-import { useAppTheme } from "@/utils/useAppTheme"
-
 import { $styles } from "../theme"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
+
+import { StyleSheet, UnistylesRuntime } from "react-native-unistyles"
 
 export const DEFAULT_BOTTOM_OFFSET = 50
 
@@ -183,12 +183,10 @@ function useAutoPreset(props: AutoScreenProps): {
  * @returns {JSX.Element} - The rendered `ScreenWithoutScrolling` component.
  */
 function ScreenWithoutScrolling(props: ScreenProps) {
-  const { style, contentContainerStyle, children, preset } = props
+  const { style, contentContainerStyle, children } = props
   return (
     <View style={[$outerStyle, style]}>
-      <View style={[$innerStyle, preset === "fixed" && $justifyFlexEnd, contentContainerStyle]}>
-        {children}
-      </View>
+      <View style={[styles.innerStyle, contentContainerStyle]}>{children}</View>
     </View>
   )
 }
@@ -250,10 +248,6 @@ function ScreenWithScrolling(props: ScreenProps) {
  */
 export function Screen(props: ScreenProps) {
   const {
-    theme: { colors },
-    themeContext,
-  } = useAppTheme()
-  const {
     backgroundColor,
     KeyboardAvoidingViewProps,
     keyboardOffset = 0,
@@ -262,18 +256,16 @@ export function Screen(props: ScreenProps) {
     statusBarStyle,
   } = props
 
+  styles.useVariants({
+    preset: props.preset,
+  })
+
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
 
   return (
-    <View
-      style={[
-        $containerStyle,
-        { backgroundColor: backgroundColor || colors.background },
-        $containerInsets,
-      ]}
-    >
+    <View style={[styles.containerStyle(backgroundColor), $containerInsets]}>
       <SystemBars
-        style={statusBarStyle || (themeContext === "dark" ? "light" : "dark")}
+        style={statusBarStyle || (UnistylesRuntime.colorScheme === "dark" ? "light" : "dark")}
         {...StatusBarProps}
       />
 
@@ -293,20 +285,32 @@ export function Screen(props: ScreenProps) {
   )
 }
 
-const $containerStyle: ViewStyle = {
-  flex: 1,
-  height: "100%",
-  width: "100%",
-}
+const styles = StyleSheet.create((theme) => ({
+  containerStyle: (backgroundColor) => ({
+    flex: 1,
+    height: "100%",
+    width: "100%",
+    backgroundColor: backgroundColor || theme.colors.background,
+  }),
+  innerStyle: {
+    justifyContent: "flex-start",
+    alignItems: "stretch",
+    variants: {
+      preset: {
+        auto: {},
+        fixed: {
+          justifyContent: "flex-end",
+        },
+        scroll: {},
+      },
+    },
+  },
+}))
 
 const $outerStyle: ViewStyle = {
   flex: 1,
   height: "100%",
   width: "100%",
-}
-
-const $justifyFlexEnd: ViewStyle = {
-  justifyContent: "flex-end",
 }
 
 const $innerStyle: ViewStyle = {
