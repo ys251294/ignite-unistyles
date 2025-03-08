@@ -246,3 +246,20 @@ const $pressedTextPresets: Record<Presets, ThemedStyle<ViewStyle>> = {
   filled: () => ({ opacity: 0.9 }),
   reversed: () => ({ opacity: 0.9 }),
 }
+
+// button: {
+//   alignItems: 'center',
+//   backgroundColor: theme.colors.cornflowerBlue,
+//   borderRadius: 24,
+//   elevation: 5,
+//   flexDirection: 'row',
+//   justifyContent: 'center',
+//   padding: 16,
+//   shadowColor: '#000',
+//   shadowOffset: {
+//     height: 2,
+//     width: 0,
+//   },
+//   shadowOpacity: 0.25,
+//   shadowRadius: 3.84,
+// },
