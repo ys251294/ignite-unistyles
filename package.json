@@ -101,6 +101,7 @@
     "node": "^18.18.0 || >=20.0.0"
   },
   "trustedDependencies": [
-    "postinstall-prepare"
+    "postinstall-prepare",
+    "react-native-nitro-modules"
   ]
 }
