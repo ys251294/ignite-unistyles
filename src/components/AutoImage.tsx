@@ -1,6 +1,8 @@
 import { useLayoutEffect, useState } from "react"
 import { Image, ImageProps, ImageURISource, PixelRatio, Platform } from "react-native"
 
+import { withUnistyles } from "react-native-unistyles"
+
 export interface AutoImageProps extends ImageProps {
   /**
    * How wide should the image be?
@@ -71,7 +73,7 @@ export function useAutoImage(
  * @param {AutoImageProps} props - The props for the `AutoImage` component.
  * @returns {JSX.Element} The rendered `AutoImage` component.
  */
-export function AutoImage(props: AutoImageProps) {
+export const AutoImage = withUnistyles(function AutoImage(props: AutoImageProps) {
   const { maxWidth, maxHeight, ...ImageProps } = props
   const source = props.source as ImageURISource
   const headers = source?.headers
@@ -86,4 +88,4 @@ export function AutoImage(props: AutoImageProps) {
   )
 
   return <Image {...ImageProps} style={[{ width, height }, props.style]} />
-}
+})
