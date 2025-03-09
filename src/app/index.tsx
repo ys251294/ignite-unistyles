@@ -1,8 +1,8 @@
-import { Image, View } from "react-native"
+import { View } from "react-native"
 
 import { observer } from "mobx-react-lite"
 
-import { Screen, Text } from "@/components"
+import { Image, Screen, Text } from "@/components"
 import { isRTL } from "@/i18n"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
