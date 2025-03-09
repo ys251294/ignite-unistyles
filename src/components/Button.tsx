@@ -1,11 +1,12 @@
 import type { ThemedStyle, ThemedStyleArray } from "@/theme"
-import { ComponentType } from "react"
+import { ComponentType, forwardRef } from "react"
 import {
   Pressable,
   PressableProps,
   PressableStateCallbackType,
   StyleProp,
   TextStyle,
+  View,
   ViewStyle,
 } from "react-native"
 
@@ -99,7 +100,7 @@ export interface ButtonProps extends PressableProps {
  *   onPress={handleButtonPress}
  * />
  */
-export function Button(props: ButtonProps) {
+export const Button = forwardRef<View, ButtonProps>(function Button(props: ButtonProps, ref) {
   const {
     tx,
     text,
@@ -149,6 +150,7 @@ export function Button(props: ButtonProps) {
 
   return (
     <Pressable
+      ref={ref}
       style={$viewStyle}
       accessibilityRole="button"
       accessibilityState={{ disabled: !!disabled }}
@@ -176,7 +178,7 @@ export function Button(props: ButtonProps) {
       )}
     </Pressable>
   )
-}
+})
 
 const $baseViewStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   minHeight: 56,
