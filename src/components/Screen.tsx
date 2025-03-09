@@ -12,8 +12,7 @@ import {
 } from "react-native"
 
 import { useScrollToTop } from "@react-navigation/native"
-// import { StatusBar, StatusBarProps, StatusBarStyle } from "expo-status-bar"
-import { SystemBars, SystemBarsProps, SystemBarStyle } from "react-native-edge-to-edge"
+import { StatusBar, StatusBarProps, StatusBarStyle } from "expo-status-bar"
 import {
   KeyboardAvoidingView,
   KeyboardAvoidingViewProps,
@@ -23,7 +22,7 @@ import {
 import { $styles } from "../theme"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles"
+import { StyleSheet, UnistylesRuntime, withUnistyles } from "react-native-unistyles"
 
 export const DEFAULT_BOTTOM_OFFSET = 50
 
@@ -51,7 +50,7 @@ interface BaseScreenProps {
   /**
    * Status bar setting. Defaults to dark.
    */
-  statusBarStyle?: SystemBarStyle
+  statusBarStyle?: StatusBarStyle
   /**
    * By how much should we offset the keyboard? Defaults to 0.
    */
@@ -63,7 +62,7 @@ interface BaseScreenProps {
   /**
    * Pass any additional props directly to the StatusBar component.
    */
-  StatusBarProps?: SystemBarsProps
+  StatusBarProps?: StatusBarProps
   /**
    * Pass any additional props directly to the KeyboardAvoidingView component.
    */
@@ -246,51 +245,56 @@ function ScreenWithScrolling(props: ScreenProps) {
  * @param {ScreenProps} props - The props for the `Screen` component.
  * @returns {JSX.Element} The rendered `Screen` component.
  */
-export function Screen(props: ScreenProps) {
-  const {
-    backgroundColor,
-    KeyboardAvoidingViewProps,
-    keyboardOffset = 0,
-    safeAreaEdges,
-    StatusBarProps,
-    statusBarStyle,
-  } = props
+export const Screen = withUnistyles(
+  function Screen(props: ScreenProps) {
+    const {
+      backgroundColor,
+      KeyboardAvoidingViewProps,
+      keyboardOffset = 0,
+      safeAreaEdges,
+      StatusBarProps,
+      statusBarStyle,
+    } = props
 
-  styles.useVariants({
-    preset: props.preset,
-  })
+    styles.useVariants({
+      preset: props.preset,
+    })
 
-  const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
+    const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
 
-  return (
-    <View style={[styles.containerStyle(backgroundColor), $containerInsets]}>
-      <SystemBars
-        style={statusBarStyle || (UnistylesRuntime.colorScheme === "dark" ? "light" : "dark")}
-        {...StatusBarProps}
-      />
+    return (
+      <View style={[styles.containerStyle(backgroundColor), $containerInsets]}>
+        <StatusBar
+          style={statusBarStyle || (UnistylesRuntime.colorScheme === "dark" ? "light" : "dark")}
+          {...StatusBarProps}
+        />
 
-      <KeyboardAvoidingView
-        behavior={isIos ? "padding" : "height"}
-        keyboardVerticalOffset={keyboardOffset}
-        {...KeyboardAvoidingViewProps}
-        style={[$styles.flex1, KeyboardAvoidingViewProps?.style]}
-      >
-        {isNonScrolling(props.preset) ? (
-          <ScreenWithoutScrolling {...props} />
-        ) : (
-          <ScreenWithScrolling {...props} />
-        )}
-      </KeyboardAvoidingView>
-    </View>
-  )
-}
+        <KeyboardAvoidingView
+          behavior={isIos ? "padding" : "height"}
+          keyboardVerticalOffset={keyboardOffset}
+          {...KeyboardAvoidingViewProps}
+          style={[$styles.flex1, KeyboardAvoidingViewProps?.style]}
+        >
+          {isNonScrolling(props.preset) ? (
+            <ScreenWithoutScrolling {...props} />
+          ) : (
+            <ScreenWithScrolling {...props} />
+          )}
+        </KeyboardAvoidingView>
+      </View>
+    )
+  },
+  (theme) => ({
+    backgroundColor: theme.colors.background,
+  }),
+)
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create(() => ({
   containerStyle: (backgroundColor) => ({
     flex: 1,
     height: "100%",
     width: "100%",
-    backgroundColor: backgroundColor || theme.colors.background,
+    backgroundColor,
   }),
   innerStyle: {
     justifyContent: "flex-start",

@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite"
 
 import { Screen, Text } from "@/components"
 import { isRTL } from "@/i18n"
-import { useAppTheme } from "@/utils/useAppTheme"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
 import { StyleSheet } from "react-native-unistyles"
@@ -14,7 +13,6 @@ const welcomeFace = require("../../assets/images/welcome-face.png")
 
 export default observer(function WelcomeScreen() {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
-  const { theme } = useAppTheme()
 
   return (
     <Screen safeAreaEdges={["top"]} contentContainerStyle={styles.container}>
@@ -31,7 +29,9 @@ export default observer(function WelcomeScreen() {
           style={styles.welcomeFace}
           source={welcomeFace}
           resizeMode="contain"
-          tintColor={theme.isDark ? theme.colors.palette.neutral900 : undefined}
+          uniProps={(theme) => ({
+            tintColor: theme.colors.palette.neutral900,
+          })}
         />
       </View>
 
