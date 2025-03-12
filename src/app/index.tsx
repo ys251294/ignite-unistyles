@@ -1,8 +1,8 @@
-import { View } from "react-native"
+import { ImageStyle, View } from "react-native"
 
 import { observer } from "mobx-react-lite"
 
-import { Image, Screen, Text } from "@/components"
+import { Icon, Image, Screen, Text, TextField } from "@/components"
 import { isRTL } from "@/i18n"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
@@ -36,7 +36,16 @@ export default observer(function WelcomeScreen() {
       </View>
 
       <View style={[styles.bottomContainer, $bottomContainerInsets]}>
-        <Text tx="welcomeScreen:postscript" size="md" />
+        <TextField
+          LeftAccessory={({ style, ...props }) => (
+            <Icon icon="bell" style={style as ImageStyle} {...props} />
+          )}
+          RightAccessory={({ style, ...props }) => (
+            <Icon icon="lock" style={style as ImageStyle} {...props} />
+          )}
+        />
+        <TextField status="error" placeholder="Hello" helper="Error" />
+        <TextField multiline />
       </View>
     </Screen>
   )
