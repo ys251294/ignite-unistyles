@@ -2,7 +2,7 @@ import { ImageStyle, View } from "react-native"
 
 import { observer } from "mobx-react-lite"
 
-import { Icon, Image, Screen, Text, TextField } from "@/components"
+import { Icon, Image, LeanView, Screen, Text, TextField } from "@/components"
 import { isRTL } from "@/i18n"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
@@ -35,7 +35,7 @@ export default observer(function WelcomeScreen() {
         />
       </View>
 
-      <View style={[styles.bottomContainer, $bottomContainerInsets]}>
+      <LeanView style={[styles.bottomContainer, $bottomContainerInsets]}>
         <TextField
           LeftAccessory={({ style, ...props }) => (
             <Icon icon="bell" style={style as ImageStyle} {...props} />
@@ -46,7 +46,7 @@ export default observer(function WelcomeScreen() {
         />
         <TextField status="error" placeholder="Hello" helper="Error" />
         <TextField multiline />
-      </View>
+      </LeanView>
     </Screen>
   )
 })
