@@ -202,10 +202,6 @@ export const TextField = forwardRef(function TextField(
 
         <TextInput
           ref={input}
-          uniProps={(theme) => ({
-            underlineColorAndroid: theme.colors.transparent,
-            placeholderTextColor: theme.colors.textDim,
-          })}
           textAlignVertical="top"
           placeholder={placeholderContent}
           {...TextInputProps}

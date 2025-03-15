@@ -192,7 +192,7 @@ const styles = StyleSheet.create((theme) => ({
     paddingHorizontal: theme.spacing.md,
     elevation: 5,
     flexDirection: "row",
-    shadowColor: "#000",
+    shadowColor: theme.colors.palette.neutral900,
     shadowOffset: {
       height: 2,
       width: 0,

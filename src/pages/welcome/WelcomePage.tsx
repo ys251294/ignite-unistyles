@@ -16,7 +16,11 @@ export default observer(function WelcomePage() {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
   return (
-    <Screen safeAreaEdges={["top"]} contentContainerStyle={styles.container}>
+    <Screen
+      safeAreaEdges={["top"]}
+      contentContainerStyle={styles.container}
+      rootContainerStyle={styles.root}
+    >
       <View style={styles.topContainer}>
         <Image style={styles.welcomeLogo} source={welcomeLogo} resizeMode="contain" />
         <Text
@@ -46,7 +50,7 @@ export default observer(function WelcomePage() {
           )}
         />
         <Card FooterComponent={<Text text="Hello" />} verticalAlignment="force-footer-bottom" />
-
+        {/* @ts-ignore Mocking of wrong route */}
         <Link asChild href={"/tabs"}>
           <Button text="Go to Next Screen" />
         </Link>
@@ -56,6 +60,9 @@ export default observer(function WelcomePage() {
 })
 
 const styles = StyleSheet.create((theme) => ({
+  root: {
+    backgroundColor: theme.colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
