@@ -11,9 +11,9 @@ import {
 
 import { Text, TextProps } from "./Text"
 
-import { StyleSheet } from "react-native-unistyles"
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles"
 
-type Presets = "filled" | "reversed"
+type Presets = UnistylesVariants<typeof styles>["preset"]
 
 export interface ButtonAccessoryProps {
   style: StyleProp<any>
@@ -120,7 +120,6 @@ export const Button = forwardRef<View, ButtonProps>(function Button(props: Butto
     preset: props.preset,
   })
 
-  // const preset: Presets = props.preset ?? "default"
   /**
    * @param {PressableStateCallbackType} root0 - The root object containing the pressed state.
    * @param {boolean} root0.pressed - The pressed state.
