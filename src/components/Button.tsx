@@ -142,9 +142,9 @@ export const Button = forwardRef<View, ButtonProps>(function Button(props: Butto
   function $textStyle({ pressed }: PressableStateCallbackType): StyleProp<TextStyle> {
     return [
       styles.baseTextStyle(pressed),
-      // $textStyleOverride,
-      // !!pressed && $pressedTextStyleOverride,
-      // !!disabled && $disabledTextStyleOverride,
+      $textStyleOverride,
+      !!pressed && $pressedTextStyleOverride,
+      !!disabled && $disabledTextStyleOverride,
     ]
   }
 
