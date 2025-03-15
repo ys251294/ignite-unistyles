@@ -3,7 +3,7 @@ import { ImageStyle, View } from "react-native"
 import { Link } from "expo-router"
 import { observer } from "mobx-react-lite"
 
-import { Button, Icon, Image, LeanView, Screen, Text, TextField } from "@/components"
+import { Button, Card, Icon, Image, LeanView, Screen, Text, TextField } from "@/components"
 import { isRTL } from "@/i18n"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
@@ -45,10 +45,11 @@ export default observer(function WelcomePage() {
             <Icon icon="lock" style={style as ImageStyle} {...props} />
           )}
         />
+        <Card FooterComponent={<Text text="Hello" />} verticalAlignment="force-footer-bottom" />
+
         <Link asChild href={"/tabs"}>
           <Button text="Go to Next Screen" />
         </Link>
-        <TextField multiline />
       </LeanView>
     </Screen>
   )

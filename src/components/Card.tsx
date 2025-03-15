@@ -15,7 +15,9 @@ import { useAppTheme } from "@/utils/useAppTheme"
 import { $styles } from "../theme"
 import { Text, TextProps } from "./Text"
 
-type Presets = "default" | "reversed"
+import { StyleSheet } from "react-native-unistyles"
+
+type Presets = "reversed"
 
 interface CardProps extends TouchableOpacityProps {
   /**
@@ -154,12 +156,11 @@ export function Card(props: CardProps) {
     ...WrapperProps
   } = props
 
-  const {
-    themed,
-    theme: { spacing },
-  } = useAppTheme()
+  styles.useVariants({
+    preset: props.preset,
+    verticalAlignment: verticalAlignment,
+  })
 
-  const preset: Presets = props.preset ?? "default"
   const isPressable = !!WrapperProps.onPress
   const isHeadingPresent = !!(HeadingComponent || heading || headingTx)
   const isContentPresent = !!(ContentComponent || content || contentTx)
@@ -170,34 +171,31 @@ export function Card(props: CardProps) {
   >
   const HeaderContentWrapper = verticalAlignment === "force-footer-bottom" ? View : Fragment
 
-  const $containerStyle: StyleProp<ViewStyle> = [
-    themed($containerPresets[preset]),
-    $containerStyleOverride,
-  ]
+  const $containerStyle: StyleProp<ViewStyle> = [styles.containerBase, $containerStyleOverride]
+
   const $headingStyle = [
-    themed($headingPresets[preset]),
-    (isFooterPresent || isContentPresent) && { marginBottom: spacing.xxxs },
+    styles.heading,
+    (isFooterPresent || isContentPresent) && styles.bottomSpaceXXXS,
     $headingStyleOverride,
     HeadingTextProps?.style,
   ]
   const $contentStyle = [
-    themed($contentPresets[preset]),
-    isHeadingPresent && { marginTop: spacing.xxxs },
-    isFooterPresent && { marginBottom: spacing.xxxs },
+    styles.content,
+    isHeadingPresent && styles.topSpaceXXXS,
+    isFooterPresent && styles.bottomSpaceXXXS,
     $contentStyleOverride,
     ContentTextProps?.style,
   ]
   const $footerStyle = [
-    themed($footerPresets[preset]),
-    (isHeadingPresent || isContentPresent) && { marginTop: spacing.xxxs },
+    styles.footer,
+    (isHeadingPresent || isContentPresent) && styles.topSpaceXXXS,
     $footerStyleOverride,
     FooterTextProps?.style,
   ]
   const $alignmentWrapperStyle = [
-    $alignmentWrapper,
-    { justifyContent: $alignmentWrapperFlexOptions[verticalAlignment] },
-    LeftComponent && { marginStart: spacing.md },
-    RightComponent && { marginEnd: spacing.md },
+    styles.alignmentWrapper,
+    LeftComponent && styles.startSpaceMD,
+    RightComponent && styles.endSpaceMD,
   ]
 
   return (
@@ -255,60 +253,92 @@ export function Card(props: CardProps) {
   )
 }
 
-const $containerBase: ThemedStyle<ViewStyle> = (theme) => ({
-  borderRadius: theme.spacing.md,
-  padding: theme.spacing.xs,
-  borderWidth: 1,
-  shadowColor: theme.colors.palette.neutral800,
-  shadowOffset: { width: 0, height: 12 },
-  shadowOpacity: 0.08,
-  shadowRadius: 12.81,
-  elevation: 16,
-  minHeight: 96,
-})
+const styles = StyleSheet.create((theme) => ({
+  containerBase: {
+    flexDirection: "row",
+    borderRadius: theme.spacing.md,
+    padding: theme.spacing.xs,
+    borderWidth: 1,
+    shadowColor: theme.colors.palette.neutral800,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12.81,
+    elevation: 16,
+    minHeight: 96,
+    variants: {
+      preset: {
+        reversed: {
+          flexDirection: "row",
+          backgroundColor: theme.colors.palette.neutral800,
+          borderColor: theme.colors.palette.neutral500,
+        },
+        default: {
+          flexDirection: "row",
+          backgroundColor: theme.colors.palette.neutral100,
+          borderColor: theme.colors.palette.neutral300,
+        },
+      },
+    },
+  },
 
-const $alignmentWrapper: ViewStyle = {
-  flex: 1,
-  alignSelf: "stretch",
-}
+  alignmentWrapper: {
+    flex: 1,
+    alignSelf: "stretch",
+    variants: {
+      verticalAlignment: {
+        "top": {
+          justifyContent: "flex-start",
+        },
+        "center": {
+          justifyContent: "center",
+        },
+        "space-between": {
+          justifyContent: "space-between",
+        },
+        "force-footer-bottom": {
+          justifyContent: "space-between",
+        },
+        "default": {
+          justifyContent: "flex-start",
+        },
+      },
+    },
+  },
+  heading: {
+    variants: {
+      preset: {
+        reversed: { color: theme.colors.palette.neutral100 },
+        default: {},
+      },
+    },
+  },
 
-const $alignmentWrapperFlexOptions = {
-  "top": "flex-start",
-  "center": "center",
-  "space-between": "space-between",
-  "force-footer-bottom": "space-between",
-} as const
-
-const $containerPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
-  default: [
-    $styles.row,
-    $containerBase,
-    (theme) => ({
-      backgroundColor: theme.colors.palette.neutral100,
-      borderColor: theme.colors.palette.neutral300,
-    }),
-  ],
-  reversed: [
-    $styles.row,
-    $containerBase,
-    (theme) => ({
-      backgroundColor: theme.colors.palette.neutral800,
-      borderColor: theme.colors.palette.neutral500,
-    }),
-  ],
-}
-
-const $headingPresets: Record<Presets, ThemedStyleArray<TextStyle>> = {
-  default: [],
-  reversed: [(theme) => ({ color: theme.colors.palette.neutral100 })],
-}
-
-const $contentPresets: Record<Presets, ThemedStyleArray<TextStyle>> = {
-  default: [],
-  reversed: [(theme) => ({ color: theme.colors.palette.neutral100 })],
-}
-
-const $footerPresets: Record<Presets, ThemedStyleArray<TextStyle>> = {
-  default: [],
-  reversed: [(theme) => ({ color: theme.colors.palette.neutral100 })],
-}
+  content: {
+    variants: {
+      preset: {
+        reversed: { color: theme.colors.palette.neutral100 },
+        default: {},
+      },
+    },
+  },
+  footer: {
+    variants: {
+      preset: {
+        reversed: { color: theme.colors.palette.neutral100 },
+        default: {},
+      },
+    },
+  },
+  bottomSpaceXXXS: {
+    marginBottom: theme.spacing.xxxs,
+  },
+  topSpaceXXXS: {
+    marginTop: theme.spacing.xxxs,
+  },
+  startSpaceMD: {
+    marginStart: theme.spacing.md,
+  },
+  endSpaceMD: {
+    marginEnd: theme.spacing.md,
+  },
+}))
