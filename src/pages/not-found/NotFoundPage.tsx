@@ -13,10 +13,10 @@ export default function NotFoundPage() {
       <Text>Whoops!</Text>
       <View style={styles.buttonWrapper}>
         <Link asChild href={".."}>
-          <Button text="Go Back" style={$styles.flex1} />
+          <Button text="Go Back" style={$styles.flex1} preset="filled" />
         </Link>
         <Link asChild href={"/_sitemap"}>
-          <Button text="Site Map" style={$styles.flex1} />
+          <Button text="Site Map" style={$styles.flex1} preset="reversed" />
         </Link>
       </View>
     </Screen>
