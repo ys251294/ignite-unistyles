@@ -1,10 +1,3 @@
----
-destinationDir: src/pages/<%= props.subdirectory %><%= props.kebabCaseName %>
-patch:
-  path: "src/pages/index.ts"
-  append: "export * from \"./<%= props.subdirectory %><%= props.kebabCaseName %>/<%= props.pascalCaseName %>Page\"\n"
-  skip: <%= props.skipIndexFile %>
----
 import { Link, Stack } from "expo-router"
 import { observer } from "mobx-react-lite"
 
@@ -12,11 +5,11 @@ import { Button, Screen, Text } from "../../components"
 
 import { StyleSheet } from "react-native-unistyles"
 
-export const <%= props.pascalCaseName %>Page = observer(function <%= props.pascalCaseName %>Page() {
+export const ProfilePage = observer(function ProfilePage() {
   return (
     <Screen style={styles.wrapper} contentContainerStyle={styles.contentContainer} preset="scroll">
-      <Stack.Screen options={{ title: "<%= props.pascalCaseName %>Page" }} />
-      <Text text="<%= props.camelCaseName %>" />
+      <Stack.Screen options={{ title: "ProfilePage" }} />
+      <Text text="profile" />
       <Link asChild href={".."}>
         <Button text="Go Back" />
       </Link>
