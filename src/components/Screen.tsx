@@ -46,7 +46,7 @@ interface BaseScreenProps {
   /**
    * styles for top most view
    */
-  rootContainerStyle?: StyleProp<ViewStyle>
+  rootStyle?: StyleProp<ViewStyle>
   /**
    * Status bar setting. Defaults to dark.
    */
@@ -247,7 +247,7 @@ function ScreenWithScrolling(props: ScreenProps) {
  */
 export function Screen(props: ScreenProps) {
   const {
-    rootContainerStyle,
+    rootStyle,
     KeyboardAvoidingViewProps,
     keyboardOffset = 0,
     safeAreaEdges,
@@ -262,7 +262,7 @@ export function Screen(props: ScreenProps) {
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
 
   return (
-    <View style={[styles.containerStyle, rootContainerStyle, $containerInsets]}>
+    <View style={[styles.containerStyle, rootStyle, $containerInsets]}>
       <StatusBar
         style={statusBarStyle || (UnistylesRuntime.colorScheme === "dark" ? "light" : "dark")}
         {...StatusBarProps}
@@ -284,11 +284,12 @@ export function Screen(props: ScreenProps) {
   )
 }
 
-const styles = StyleSheet.create(() => ({
+const styles = StyleSheet.create((theme) => ({
   containerStyle: {
     flex: 1,
     height: "100%",
     width: "100%",
+    backgroundColor: theme.colors.background,
   },
   innerStyle: {
     justifyContent: "flex-start",
