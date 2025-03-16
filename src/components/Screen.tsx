@@ -264,7 +264,13 @@ export function Screen(props: ScreenProps) {
   return (
     <View style={[styles.containerStyle, rootStyle, $containerInsets]}>
       <StatusBar
-        style={statusBarStyle || (UnistylesRuntime.colorScheme === "dark" ? "light" : "dark")}
+        style={
+          statusBarStyle || UnistylesRuntime.hasAdaptiveThemes === true
+            ? "auto"
+            : UnistylesRuntime.colorScheme === "dark"
+              ? "light"
+              : "dark"
+        }
         {...StatusBarProps}
       />
 
