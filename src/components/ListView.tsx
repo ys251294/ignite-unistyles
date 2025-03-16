@@ -5,6 +5,8 @@ import { FlashList, FlashListProps } from "@shopify/flash-list"
 
 import { isRTL } from "@/i18n"
 
+import { withUnistyles } from "react-native-unistyles"
+
 export type ListViewRef<T> = FlashList<T> | FlatList<T>
 
 export type ListViewProps<T> = PropsWithoutRef<FlashListProps<T>>
@@ -36,8 +38,10 @@ const ListViewComponent = forwardRef(
 
 ListViewComponent.displayName = "ListView"
 
-export const ListView = ListViewComponent as <T>(
+const ListViewInner = ListViewComponent as <T>(
   props: ListViewProps<T> & {
     ref?: RefObject<ListViewRef<T>>
   },
 ) => ReactElement
+
+export const ListView = withUnistyles(ListViewInner)

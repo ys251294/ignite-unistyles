@@ -1,9 +1,7 @@
-import type { ThemedStyle, ThemedStyleArray } from "@/theme"
 import { ComponentType, forwardRef, Ref, useImperativeHandle, useRef } from "react"
 import {
   ImageStyle,
   StyleProp,
-  TextInput,
   TextInputProps,
   TextStyle,
   TouchableOpacity,
@@ -12,10 +10,12 @@ import {
 } from "react-native"
 
 import { isRTL, translate } from "@/i18n"
-import { useAppTheme } from "@/utils/useAppTheme"
 
 import { $styles } from "../theme"
+import { TextInput, TextInputType } from "./react-native"
 import { Text, TextProps } from "./Text"
+
+import { StyleSheet } from "react-native-unistyles"
 
 export interface TextFieldAccessoryProps {
   style: StyleProp<ViewStyle | TextStyle | ImageStyle>
@@ -108,7 +108,10 @@ export interface TextFieldProps extends Omit<TextInputProps, "ref"> {
  * @param {TextFieldProps} props - The props for the `TextField` component.
  * @returns {JSX.Element} The rendered `TextField` component.
  */
-export const TextField = forwardRef(function TextField(props: TextFieldProps, ref: Ref<TextInput>) {
+export const TextField = forwardRef(function TextField(
+  props: TextFieldProps,
+  ref: Ref<TextInputType>,
+) {
   const {
     labelTx,
     label,
@@ -129,14 +132,16 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     inputWrapperStyle: $inputWrapperStyleOverride,
     ...TextInputProps
   } = props
-  const input = useRef<TextInput>(null)
-
-  const {
-    themed,
-    theme: { colors },
-  } = useAppTheme()
+  const input = useRef<TextInputType>(null)
 
   const disabled = TextInputProps.editable === false || status === "disabled"
+
+  styles.useVariants({
+    status: disabled ? "disabled" : status,
+    leftAccessory: !!LeftAccessory,
+    rightAccessory: !!RightAccessory,
+    multiline: TextInputProps.multiline,
+  })
 
   const placeholderContent = placeholderTx
     ? translate(placeholderTx, placeholderTxOptions)
@@ -144,31 +149,17 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
   const $containerStyles = [$containerStyleOverride]
 
-  const $labelStyles = [$labelStyle, LabelTextProps?.style]
+  const $labelStyles = [styles.labelStyle, LabelTextProps?.style]
 
-  const $inputWrapperStyles = [
-    $styles.row,
-    $inputWrapperStyle,
-    status === "error" && { borderColor: colors.error },
-    TextInputProps.multiline && { minHeight: 112 },
-    LeftAccessory && { paddingStart: 0 },
-    RightAccessory && { paddingEnd: 0 },
-    $inputWrapperStyleOverride,
-  ]
+  const $inputWrapperStyles = [$styles.row, styles.inputWrapperStyle, $inputWrapperStyleOverride]
 
-  const $inputStyles: ThemedStyleArray<TextStyle> = [
-    $inputStyle,
-    disabled && { color: colors.textDim },
+  const $inputStyles = [
+    styles.inputStyle,
     isRTL && { textAlign: "right" as TextStyle["textAlign"] },
-    TextInputProps.multiline && { height: "auto" },
     $inputStyleOverride,
   ]
 
-  const $helperStyles = [
-    $helperStyle,
-    status === "error" && { color: colors.error },
-    HelperTextProps?.style,
-  ]
+  const $helperStyles = [styles.helperStyle, HelperTextProps?.style]
 
   /**
    *
@@ -179,7 +170,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     input.current?.focus()
   }
 
-  useImperativeHandle(ref, () => input.current as TextInput)
+  useImperativeHandle(ref, () => input.current as TextInputType)
 
   return (
     <TouchableOpacity
@@ -195,14 +186,14 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           tx={labelTx}
           txOptions={labelTxOptions}
           {...LabelTextProps}
-          style={themed($labelStyles)}
+          style={$labelStyles}
         />
       )}
 
-      <View style={themed($inputWrapperStyles)}>
+      <View style={$inputWrapperStyles}>
         {!!LeftAccessory && (
           <LeftAccessory
-            style={themed($leftAccessoryStyle)}
+            style={styles.leftAccessoryStyle}
             status={status}
             editable={!disabled}
             multiline={TextInputProps.multiline ?? false}
@@ -211,18 +202,16 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
         <TextInput
           ref={input}
-          underlineColorAndroid={colors.transparent}
           textAlignVertical="top"
           placeholder={placeholderContent}
-          placeholderTextColor={colors.textDim}
           {...TextInputProps}
           editable={!disabled}
-          style={themed($inputStyles)}
+          style={$inputStyles}
         />
 
         {!!RightAccessory && (
           <RightAccessory
-            style={themed($rightAccessoryStyle)}
+            style={styles.rightAccessoryStyle}
             status={status}
             editable={!disabled}
             multiline={TextInputProps.multiline ?? false}
@@ -237,54 +226,87 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           tx={helperTx}
           txOptions={helperTxOptions}
           {...HelperTextProps}
-          style={themed($helperStyles)}
+          style={$helperStyles}
         />
       )}
     </TouchableOpacity>
   )
 })
 
-const $labelStyle: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  marginBottom: spacing.xs,
-})
-
-const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  alignItems: "flex-start",
-  borderWidth: 1,
-  borderRadius: 4,
-  backgroundColor: colors.palette.neutral200,
-  borderColor: colors.palette.neutral400,
-  overflow: "hidden",
-})
-
-const $inputStyle: ThemedStyle<ViewStyle> = ({ colors, typography, spacing }) => ({
-  flex: 1,
-  alignSelf: "stretch",
-  fontFamily: typography.primary.normal,
-  color: colors.text,
-  fontSize: 16,
-  height: 24,
-  // https://github.com/facebook/react-native/issues/21720#issuecomment-532642093
-  paddingVertical: 0,
-  paddingHorizontal: 0,
-  marginVertical: spacing.xs,
-  marginHorizontal: spacing.sm,
-})
-
-const $helperStyle: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  marginTop: spacing.xs,
-})
-
-const $rightAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginEnd: spacing.xs,
-  height: 40,
-  justifyContent: "center",
-  alignItems: "center",
-})
-
-const $leftAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginStart: spacing.xs,
-  height: 40,
-  justifyContent: "center",
-  alignItems: "center",
-})
+const styles = StyleSheet.create((theme) => ({
+  labelStyle: {
+    marginBottom: theme.spacing.xs,
+  },
+  inputWrapperStyle: {
+    alignItems: "flex-start",
+    borderWidth: 1,
+    borderRadius: 4,
+    backgroundColor: theme.colors.palette.neutral200,
+    borderColor: theme.colors.palette.neutral400,
+    overflow: "hidden",
+    variants: {
+      status: {
+        error: { borderColor: theme.colors.error },
+        disabled: {},
+      },
+      leftAccessory: {
+        true: { paddingStart: 0 },
+        false: {},
+      },
+      rightAccessory: {
+        true: { paddingEnd: 0 },
+        false: {},
+      },
+      multiline: {
+        true: { minHeight: 112 },
+        false: {},
+      },
+    },
+  },
+  inputStyle: {
+    flex: 1,
+    alignSelf: "stretch",
+    fontFamily: theme.typography.primary.normal,
+    color: theme.colors.text,
+    fontSize: 16,
+    height: 24,
+    // https://github.com/facebook/react-native/issues/21720#issuecomment-532642093
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    marginVertical: theme.spacing.xs,
+    marginHorizontal: theme.spacing.sm,
+    variants: {
+      status: {
+        error: {},
+        disabled: { color: theme.colors.textDim },
+      },
+      multiline: {
+        true: {
+          height: "auto",
+        },
+        false: {},
+      },
+    },
+  },
+  helperStyle: {
+    marginTop: theme.spacing.xs,
+    variants: {
+      status: {
+        error: { color: theme.colors.error },
+        disabled: {},
+      },
+    },
+  },
+  rightAccessoryStyle: {
+    marginEnd: theme.spacing.xs,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  leftAccessoryStyle: {
+    marginStart: theme.spacing.xs,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+}))

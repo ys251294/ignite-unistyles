@@ -12,18 +12,17 @@ import {
 } from "react-native"
 
 import { useScrollToTop } from "@react-navigation/native"
-// import { StatusBar, StatusBarProps, StatusBarStyle } from "expo-status-bar"
-import { SystemBars, SystemBarsProps, SystemBarStyle } from "react-native-edge-to-edge"
+import { StatusBar, StatusBarProps, StatusBarStyle } from "expo-status-bar"
 import {
   KeyboardAvoidingView,
   KeyboardAvoidingViewProps,
   KeyboardAwareScrollView,
 } from "react-native-keyboard-controller"
 
-import { useAppTheme } from "@/utils/useAppTheme"
-
 import { $styles } from "../theme"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
+
+import { StyleSheet, UnistylesRuntime } from "react-native-unistyles"
 
 export const DEFAULT_BOTTOM_OFFSET = 50
 
@@ -45,13 +44,13 @@ interface BaseScreenProps {
    */
   safeAreaEdges?: ExtendedEdge[]
   /**
-   * Background color
+   * styles for top most view
    */
-  backgroundColor?: string
+  rootContainerStyle?: StyleProp<ViewStyle>
   /**
    * Status bar setting. Defaults to dark.
    */
-  statusBarStyle?: SystemBarStyle
+  statusBarStyle?: StatusBarStyle
   /**
    * By how much should we offset the keyboard? Defaults to 0.
    */
@@ -63,7 +62,7 @@ interface BaseScreenProps {
   /**
    * Pass any additional props directly to the StatusBar component.
    */
-  StatusBarProps?: SystemBarsProps
+  StatusBarProps?: StatusBarProps
   /**
    * Pass any additional props directly to the KeyboardAvoidingView component.
    */
@@ -183,12 +182,10 @@ function useAutoPreset(props: AutoScreenProps): {
  * @returns {JSX.Element} - The rendered `ScreenWithoutScrolling` component.
  */
 function ScreenWithoutScrolling(props: ScreenProps) {
-  const { style, contentContainerStyle, children, preset } = props
+  const { style, contentContainerStyle, children } = props
   return (
     <View style={[$outerStyle, style]}>
-      <View style={[$innerStyle, preset === "fixed" && $justifyFlexEnd, contentContainerStyle]}>
-        {children}
-      </View>
+      <View style={[styles.innerStyle, contentContainerStyle]}>{children}</View>
     </View>
   )
 }
@@ -250,11 +247,7 @@ function ScreenWithScrolling(props: ScreenProps) {
  */
 export function Screen(props: ScreenProps) {
   const {
-    theme: { colors },
-    themeContext,
-  } = useAppTheme()
-  const {
-    backgroundColor,
+    rootContainerStyle,
     KeyboardAvoidingViewProps,
     keyboardOffset = 0,
     safeAreaEdges,
@@ -262,18 +255,16 @@ export function Screen(props: ScreenProps) {
     statusBarStyle,
   } = props
 
+  styles.useVariants({
+    preset: props.preset,
+  })
+
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
 
   return (
-    <View
-      style={[
-        $containerStyle,
-        { backgroundColor: backgroundColor || colors.background },
-        $containerInsets,
-      ]}
-    >
-      <SystemBars
-        style={statusBarStyle || (themeContext === "dark" ? "light" : "dark")}
+    <View style={[styles.containerStyle, rootContainerStyle, $containerInsets]}>
+      <StatusBar
+        style={statusBarStyle || (UnistylesRuntime.colorScheme === "dark" ? "light" : "dark")}
         {...StatusBarProps}
       />
 
@@ -293,20 +284,31 @@ export function Screen(props: ScreenProps) {
   )
 }
 
-const $containerStyle: ViewStyle = {
-  flex: 1,
-  height: "100%",
-  width: "100%",
-}
+const styles = StyleSheet.create(() => ({
+  containerStyle: {
+    flex: 1,
+    height: "100%",
+    width: "100%",
+  },
+  innerStyle: {
+    justifyContent: "flex-start",
+    alignItems: "stretch",
+    variants: {
+      preset: {
+        auto: {},
+        fixed: {
+          justifyContent: "flex-end",
+        },
+        scroll: {},
+      },
+    },
+  },
+}))
 
 const $outerStyle: ViewStyle = {
   flex: 1,
   height: "100%",
   width: "100%",
-}
-
-const $justifyFlexEnd: ViewStyle = {
-  justifyContent: "flex-end",
 }
 
 const $innerStyle: ViewStyle = {

@@ -1,20 +1,19 @@
-import type { ThemedStyle, ThemedStyleArray } from "@/theme"
-import { ComponentType } from "react"
+import { ComponentType, forwardRef } from "react"
 import {
   Pressable,
   PressableProps,
   PressableStateCallbackType,
   StyleProp,
   TextStyle,
+  View,
   ViewStyle,
 } from "react-native"
 
-import { useAppTheme } from "@/utils/useAppTheme"
-
-import { $styles } from "../theme"
 import { Text, TextProps } from "./Text"
 
-type Presets = "default" | "filled" | "reversed"
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles"
+
+type Presets = UnistylesVariants<typeof styles>["preset"]
 
 export interface ButtonAccessoryProps {
   style: StyleProp<any>
@@ -99,7 +98,7 @@ export interface ButtonProps extends PressableProps {
  *   onPress={handleButtonPress}
  * />
  */
-export function Button(props: ButtonProps) {
+export const Button = forwardRef<View, ButtonProps>(function Button(props: ButtonProps, ref) {
   const {
     tx,
     text,
@@ -117,9 +116,10 @@ export function Button(props: ButtonProps) {
     ...rest
   } = props
 
-  const { themed } = useAppTheme()
+  styles.useVariants({
+    preset: props.preset,
+  })
 
-  const preset: Presets = props.preset ?? "default"
   /**
    * @param {PressableStateCallbackType} root0 - The root object containing the pressed state.
    * @param {boolean} root0.pressed - The pressed state.
@@ -127,9 +127,9 @@ export function Button(props: ButtonProps) {
    */
   function $viewStyle({ pressed }: PressableStateCallbackType): StyleProp<ViewStyle> {
     return [
-      themed($viewPresets[preset]),
+      styles.baseViewStyle(pressed),
       $viewStyleOverride,
-      !!pressed && themed([$pressedViewPresets[preset], $pressedViewStyleOverride]),
+      !!pressed && $pressedViewStyleOverride,
       !!disabled && $disabledViewStyleOverride,
     ]
   }
@@ -140,15 +140,16 @@ export function Button(props: ButtonProps) {
    */
   function $textStyle({ pressed }: PressableStateCallbackType): StyleProp<TextStyle> {
     return [
-      themed($textPresets[preset]),
+      styles.baseTextStyle(pressed),
       $textStyleOverride,
-      !!pressed && themed([$pressedTextPresets[preset], $pressedTextStyleOverride]),
+      !!pressed && $pressedTextStyleOverride,
       !!disabled && $disabledTextStyleOverride,
     ]
   }
 
   return (
     <Pressable
+      ref={ref}
       style={$viewStyle}
       accessibilityRole="button"
       accessibilityState={{ disabled: !!disabled }}
@@ -158,7 +159,11 @@ export function Button(props: ButtonProps) {
       {(state) => (
         <>
           {!!LeftAccessory && (
-            <LeftAccessory style={$leftAccessoryStyle} pressableState={state} disabled={disabled} />
+            <LeftAccessory
+              style={styles.leftAccessoryStyle}
+              pressableState={state}
+              disabled={disabled}
+            />
           )}
 
           <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
@@ -167,7 +172,7 @@ export function Button(props: ButtonProps) {
 
           {!!RightAccessory && (
             <RightAccessory
-              style={$rightAccessoryStyle}
+              style={styles.rightAccessoryStyle}
               pressableState={state}
               disabled={disabled}
             />
@@ -176,73 +181,78 @@ export function Button(props: ButtonProps) {
       )}
     </Pressable>
   )
-}
-
-const $baseViewStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  minHeight: 56,
-  borderRadius: 4,
-  justifyContent: "center",
-  alignItems: "center",
-  paddingVertical: spacing.sm,
-  paddingHorizontal: spacing.sm,
-  overflow: "hidden",
 })
 
-const $baseTextStyle: ThemedStyle<TextStyle> = ({ typography }) => ({
-  fontSize: 16,
-  lineHeight: 20,
-  fontFamily: typography.primary.medium,
-  textAlign: "center",
-  flexShrink: 1,
-  flexGrow: 0,
-  zIndex: 2,
-})
-
-const $rightAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginStart: spacing.xs,
-  zIndex: 1,
-})
-const $leftAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginEnd: spacing.xs,
-  zIndex: 1,
-})
-
-const $viewPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
-  default: [
-    $styles.row,
-    $baseViewStyle,
-    ({ colors }) => ({
-      borderWidth: 1,
-      borderColor: colors.palette.neutral400,
-      backgroundColor: colors.palette.neutral100,
-    }),
-  ],
-  filled: [
-    $styles.row,
-    $baseViewStyle,
-    ({ colors }) => ({ backgroundColor: colors.palette.neutral300 }),
-  ],
-  reversed: [
-    $styles.row,
-    $baseViewStyle,
-    ({ colors }) => ({ backgroundColor: colors.palette.neutral800 }),
-  ],
-}
-
-const $textPresets: Record<Presets, ThemedStyleArray<TextStyle>> = {
-  default: [$baseTextStyle],
-  filled: [$baseTextStyle],
-  reversed: [$baseTextStyle, ({ colors }) => ({ color: colors.palette.neutral100 })],
-}
-
-const $pressedViewPresets: Record<Presets, ThemedStyle<ViewStyle>> = {
-  default: ({ colors }) => ({ backgroundColor: colors.palette.neutral200 }),
-  filled: ({ colors }) => ({ backgroundColor: colors.palette.neutral400 }),
-  reversed: ({ colors }) => ({ backgroundColor: colors.palette.neutral700 }),
-}
-
-const $pressedTextPresets: Record<Presets, ThemedStyle<ViewStyle>> = {
-  default: () => ({ opacity: 0.9 }),
-  filled: () => ({ opacity: 0.9 }),
-  reversed: () => ({ opacity: 0.9 }),
-}
+const styles = StyleSheet.create((theme) => ({
+  baseViewStyle: (pressed) => ({
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    elevation: 5,
+    flexDirection: "row",
+    shadowColor: theme.colors.palette.neutral900,
+    shadowOffset: {
+      height: 2,
+      width: 0,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    variants: {
+      preset: {
+        filled: {
+          flexDirection: "row",
+          backgroundColor: pressed
+            ? theme.colors.palette.neutral400
+            : theme.colors.palette.neutral300,
+        },
+        reversed: {
+          flexDirection: "row",
+          backgroundColor: pressed
+            ? theme.colors.palette.neutral700
+            : theme.colors.palette.neutral800,
+        },
+        default: {
+          flexDirection: "row",
+          borderWidth: 1,
+          borderColor: theme.colors.palette.neutral400,
+          backgroundColor: pressed
+            ? theme.colors.palette.neutral200
+            : theme.colors.palette.neutral100,
+        },
+      },
+    },
+  }),
+  baseTextStyle: (pressed) => ({
+    fontSize: 16,
+    lineHeight: 20,
+    fontFamily: theme.typography.primary.medium,
+    textAlign: "center",
+    flexShrink: 1,
+    flexGrow: 0,
+    zIndex: 2,
+    variants: {
+      preset: {
+        filled: {
+          opacity: pressed ? 0.9 : 1,
+        },
+        reversed: {
+          color: theme.colors.palette.neutral100,
+          opacity: pressed ? 0.9 : 1,
+        },
+        default: {
+          opacity: pressed ? 0.9 : 1,
+        },
+      },
+    },
+  }),
+  rightAccessoryStyle: {
+    marginStart: theme.spacing.xs,
+    zIndex: 1,
+  },
+  leftAccessoryStyle: {
+    marginEnd: theme.spacing.xs,
+    zIndex: 1,
+  },
+}))

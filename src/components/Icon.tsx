@@ -12,6 +12,8 @@ import {
 
 import { useAppTheme } from "@/utils/useAppTheme"
 
+import { withUnistyles } from "react-native-unistyles"
+
 export type IconTypes = keyof typeof iconRegistry
 
 interface IconProps extends TouchableOpacityProps {
@@ -53,40 +55,41 @@ interface IconProps extends TouchableOpacityProps {
  * @param {IconProps} props - The props for the `Icon` component.
  * @returns {JSX.Element} The rendered `Icon` component.
  */
-export function Icon(props: IconProps) {
-  const {
-    icon,
-    color,
-    size,
-    style: $imageStyleOverride,
-    containerStyle: $containerStyleOverride,
-    ...WrapperProps
-  } = props
+export const Icon = withUnistyles(
+  function Icon(props: IconProps) {
+    const {
+      icon,
+      color,
+      size,
+      style: $imageStyleOverride,
+      containerStyle: $containerStyleOverride,
+      ...WrapperProps
+    } = props
 
-  const isPressable = !!WrapperProps.onPress
-  const Wrapper = (WrapperProps?.onPress ? TouchableOpacity : View) as ComponentType<
-    TouchableOpacityProps | ViewProps
-  >
-
-  const { theme } = useAppTheme()
-
-  const $imageStyle: StyleProp<ImageStyle> = [
-    $imageStyleBase,
-    { tintColor: color ?? theme.colors.text },
-    size !== undefined && { width: size, height: size },
-    $imageStyleOverride,
-  ]
-
-  return (
-    <Wrapper
-      accessibilityRole={isPressable ? "imagebutton" : undefined}
-      {...WrapperProps}
-      style={$containerStyleOverride}
+    const isPressable = !!WrapperProps.onPress
+    const Wrapper = (WrapperProps?.onPress ? TouchableOpacity : View) as ComponentType<
+      TouchableOpacityProps | ViewProps
     >
-      <Image style={$imageStyle} source={iconRegistry[icon]} />
-    </Wrapper>
-  )
-}
+
+    const $imageStyle: StyleProp<ImageStyle> = [
+      $imageStyleBase,
+      { tintColor: color },
+      size !== undefined && { width: size, height: size },
+      $imageStyleOverride,
+    ]
+
+    return (
+      <Wrapper
+        accessibilityRole={isPressable ? "imagebutton" : undefined}
+        {...WrapperProps}
+        style={$containerStyleOverride}
+      >
+        <Image style={$imageStyle} source={iconRegistry[icon]} />
+      </Wrapper>
+    )
+  },
+  (theme) => ({ color: theme.colors.text }),
+)
 
 export const iconRegistry = {
   back: require("../../assets/icons/back.png"),

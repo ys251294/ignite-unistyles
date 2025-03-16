@@ -1,10 +1,9 @@
-import type { ThemedStyle } from "@/theme"
 import { ErrorInfo } from "react"
-import { ScrollView, TextStyle, View, ViewStyle } from "react-native"
-
-import { useAppTheme } from "@/utils/useAppTheme"
+import { ScrollView, View } from "react-native"
 
 import { Button, Icon, Screen, Text } from "../../components"
+
+import { StyleSheet } from "react-native-unistyles"
 
 export interface ErrorDetailsProps {
   error: Error
@@ -18,34 +17,33 @@ export interface ErrorDetailsProps {
  * @returns {JSX.Element} The rendered `ErrorDetails` component.
  */
 export function ErrorDetails(props: ErrorDetailsProps) {
-  const { themed } = useAppTheme()
   return (
     <Screen
       preset="fixed"
       safeAreaEdges={["top", "bottom"]}
-      contentContainerStyle={themed($contentContainer)}
+      contentContainerStyle={styles.contentContainer}
     >
-      <View style={$topSection}>
+      <View style={styles.topSection}>
         <Icon icon="ladybug" size={64} />
-        <Text style={themed($heading)} preset="subheading" tx="errorScreen:title" />
+        <Text style={styles.heading} preset="subheading" tx="errorScreen:title" />
         <Text tx="errorScreen:friendlySubtitle" />
       </View>
 
       <ScrollView
-        style={themed($errorSection)}
-        contentContainerStyle={themed($errorSectionContentContainer)}
+        style={styles.errorSection}
+        contentContainerStyle={styles.errorSectionContentContainer}
       >
-        <Text style={themed($errorContent)} weight="bold" text={`${props.error}`.trim()} />
+        <Text style={styles.errorContent} weight="bold" text={`${props.error}`.trim()} />
         <Text
           selectable
-          style={themed($errorBacktrace)}
+          style={styles.errorBacktrace}
           text={`${props.errorInfo?.componentStack ?? ""}`.trim()}
         />
       </ScrollView>
 
       <Button
         preset="reversed"
-        style={themed($resetButton)}
+        style={styles.resetButton}
         onPress={props.onReset}
         tx="errorScreen:reset"
       />
@@ -53,44 +51,46 @@ export function ErrorDetails(props: ErrorDetailsProps) {
   )
 }
 
-const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  alignItems: "center",
-  paddingHorizontal: spacing.lg,
-  paddingTop: spacing.xl,
-  flex: 1,
-})
+const styles = StyleSheet.create((theme) => ({
+  contentContainer: {
+    alignItems: "center",
+    flex: 1,
+    paddingHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing.xl,
+  },
 
-const $topSection: ViewStyle = {
-  flex: 1,
-  alignItems: "center",
-}
+  errorBacktrace: {
+    color: theme.colors.textDim,
+    marginTop: theme.spacing.md,
+  },
 
-const $heading: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  color: colors.error,
-  marginBottom: spacing.md,
-})
+  errorContent: {
+    color: theme.colors.error,
+  },
 
-const $errorSection: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  flex: 2,
-  backgroundColor: colors.separator,
-  marginVertical: spacing.md,
-  borderRadius: 6,
-})
+  errorSection: {
+    backgroundColor: theme.colors.separator,
+    borderRadius: 6,
+    flex: 2,
+    marginVertical: theme.spacing.md,
+  },
 
-const $errorSectionContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  padding: spacing.md,
-})
+  errorSectionContentContainer: {
+    padding: theme.spacing.md,
+  },
 
-const $errorContent: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.error,
-})
+  heading: {
+    color: theme.colors.error,
+    marginBottom: theme.spacing.md,
+  },
 
-const $errorBacktrace: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  marginTop: spacing.md,
-  color: colors.textDim,
-})
+  resetButton: {
+    backgroundColor: theme.colors.error,
+    paddingHorizontal: theme.spacing.xxl,
+  },
 
-const $resetButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.error,
-  paddingHorizontal: spacing.xxl,
-})
+  topSection: {
+    alignItems: "center",
+    flex: 1,
+  },
+}))
