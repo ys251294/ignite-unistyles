@@ -19,7 +19,7 @@ export default observer(function WelcomePage() {
     <Screen
       safeAreaEdges={["top"]}
       contentContainerStyle={styles.container}
-      rootContainerStyle={styles.root}
+      rootStyle={styles.root}
     >
       <View style={styles.topContainer}>
         <Image style={styles.welcomeLogo} source={welcomeLogo} resizeMode="contain" />
@@ -41,13 +41,12 @@ export default observer(function WelcomePage() {
       </View>
 
       <LeanView style={[styles.bottomContainer, $bottomContainerInsets]}>
-        <TextField
-          LeftAccessory={({ style, ...props }) => (
-            <Icon icon="bell" style={style as ImageStyle} {...props} />
-          )}
-          RightAccessory={({ style, ...props }) => (
-            <Icon icon="lock" style={style as ImageStyle} {...props} />
-          )}
+        <Icon
+          icon="bell"
+          color={(theme) => {
+            console.log("Called in color callback")
+            return theme.colors.text
+          }}
         />
         <Card FooterComponent={<Text text="Hello" />} verticalAlignment="force-footer-bottom" />
         {/* @ts-ignore Mocking of wrong route */}

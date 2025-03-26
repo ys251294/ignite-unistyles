@@ -10,13 +10,11 @@ import {
   ViewStyle,
 } from "react-native"
 
-import { useAppTheme } from "@/utils/useAppTheme"
-
-import { withUnistyles } from "react-native-unistyles"
+import { StyleSheet, UnistylesThemes } from "react-native-unistyles"
 
 export type IconTypes = keyof typeof iconRegistry
 
-interface IconProps extends TouchableOpacityProps {
+interface IconProps extends Omit<TouchableOpacityProps, "style"> {
   /**
    * The name of the icon
    */
@@ -25,7 +23,7 @@ interface IconProps extends TouchableOpacityProps {
   /**
    * An optional tint color for the icon
    */
-  color?: string
+  color?: (theme: UnistylesThemes[keyof UnistylesThemes]) => string
 
   /**
    * An optional size for the icon. If not provided, the icon will be sized to the icon's resolution.
@@ -55,41 +53,43 @@ interface IconProps extends TouchableOpacityProps {
  * @param {IconProps} props - The props for the `Icon` component.
  * @returns {JSX.Element} The rendered `Icon` component.
  */
-export const Icon = withUnistyles(
-  function Icon(props: IconProps) {
-    const {
-      icon,
-      color,
-      size,
-      style: $imageStyleOverride,
-      containerStyle: $containerStyleOverride,
-      ...WrapperProps
-    } = props
+export function Icon(props: IconProps) {
+  const {
+    icon,
+    color,
+    size,
+    style: $imageStyleOverride,
+    containerStyle: $containerStyleOverride,
+    ...WrapperProps
+  } = props
 
-    const isPressable = !!WrapperProps.onPress
-    const Wrapper = (WrapperProps?.onPress ? TouchableOpacity : View) as ComponentType<
-      TouchableOpacityProps | ViewProps
+  const isPressable = !!WrapperProps.onPress
+  const Wrapper = (WrapperProps?.onPress ? TouchableOpacity : View) as ComponentType<
+    TouchableOpacityProps | ViewProps
+  >
+
+  // TODO: Dummy function to guarantee color props is always there
+  const tintColor = (theme: UnistylesThemes[keyof UnistylesThemes]) => {
+    console.log("Called in tintColor callback")
+    return theme.colors.text
+  }
+
+  const $imageStyle: StyleProp<ImageStyle> = [
+    styles.imageStyleBase(color ?? tintColor),
+    size !== undefined && { width: size, height: size },
+    $imageStyleOverride,
+  ]
+
+  return (
+    <Wrapper
+      accessibilityRole={isPressable ? "imagebutton" : undefined}
+      {...WrapperProps}
+      style={$containerStyleOverride}
     >
-
-    const $imageStyle: StyleProp<ImageStyle> = [
-      $imageStyleBase,
-      { tintColor: color },
-      size !== undefined && { width: size, height: size },
-      $imageStyleOverride,
-    ]
-
-    return (
-      <Wrapper
-        accessibilityRole={isPressable ? "imagebutton" : undefined}
-        {...WrapperProps}
-        style={$containerStyleOverride}
-      >
-        <Image style={$imageStyle} source={iconRegistry[icon]} />
-      </Wrapper>
-    )
-  },
-  (theme) => ({ color: theme.colors.text }),
-)
+      <Image style={$imageStyle} source={iconRegistry[icon]} />
+    </Wrapper>
+  )
+}
 
 export const iconRegistry = {
   back: require("../../assets/icons/back.png"),
@@ -107,6 +107,15 @@ export const iconRegistry = {
   x: require("../../assets/icons/x.png"),
 }
 
-const $imageStyleBase: ImageStyle = {
-  resizeMode: "contain",
-}
+const styles = StyleSheet.create((theme) => {
+  return {
+    imageStyleBase: (color: (theme: UnistylesThemes[keyof UnistylesThemes]) => string) => {
+      console.log("Styles Sheet re-created")
+      return {
+        resizeMode: "contain",
+        // tintColor: color(theme),
+        tintColor: color?.(theme),
+      }
+    },
+  }
+})
