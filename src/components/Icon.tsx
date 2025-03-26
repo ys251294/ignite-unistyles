@@ -75,6 +75,7 @@ export function Icon(props: IconProps) {
   }
 
   const $imageStyle: StyleProp<ImageStyle> = [
+    // we can even completely use tintColor fun instead of color ?? tintColor but error will persist
     styles.imageStyleBase(color ?? tintColor),
     size !== undefined && { width: size, height: size },
     $imageStyleOverride,
@@ -113,7 +114,7 @@ const styles = StyleSheet.create((theme) => {
       console.log("Styles Sheet re-created")
       return {
         resizeMode: "contain",
-        // tintColor: color(theme),
+        // tintColor: color(theme),  // using this line work only one time and causes crash on theme change
         tintColor: color?.(theme),
       }
     },
